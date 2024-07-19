@@ -47,6 +47,8 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background-color: #242424;
+  color: white;
 }
 
 .container {
@@ -86,13 +88,22 @@ body {
 .messages {
   flex: 1;
   overflow-y: auto;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
 }
 
 .message {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #505050;
+  margin: 2px 0;
+}
+
+.output-message {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #537984;
+  margin-bottom: 24px;
 }
 
 .input-container {
@@ -106,7 +117,7 @@ body {
   border-radius: 4px;
 }
 
-.input-container button {
+ button {
   padding: 10px;
   margin-left: 10px;
   border: none;

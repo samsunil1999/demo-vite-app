@@ -1,19 +1,38 @@
 import React, { useState } from 'react';
 import './App.css';
 
+
 const App = () => {
   const [files, setFiles] = useState([]);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [outputMessages, setOutputMessages] = useState([])
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
+    if (selectedFiles.length == 0) {
+      return
+    }
+    const updatedFiles = selectedFiles[0]
+    setFiles([...files, updatedFiles]);
   };
 
-  const handleSendMessage = () => {
+  console.log(files)
+  
+  const handleSendMessage = (e) => {
     if (message.trim()) {
       setMessages([...messages, message]);
+      fetch("./data/data.json")
+      .then((res) => {
+        return res.json()
+      })
+      .then(data => {
+        // setChatOutput(data.response)
+        console.log(data.response)
+        setOutputMessages([...outputMessages, data.response])
+      }
+    )
+
       setMessage('');
     }
   };
@@ -26,18 +45,24 @@ const App = () => {
         <div className="file-list">
           <h3>Uploaded Files:</h3>
           <ul>
-            {files.map((file, index) => (
-              <li key={index}>{file.name}</li>
+            {files.map((file) => (
+              
+              <li key={file.name}>{file.name}</li>
             ))}
           </ul>
         </div>
+        <button onClick={handleSendMessage}>Upload</button>
       </div>
       <div className="right">
         <h2>Chat</h2>
         <div className="messages">
           {messages.map((msg, index) => (
+            <>
             <div key={index} className="message">{msg}</div>
+            <div className="output-message">{outputMessages[index]}</div>
+            </>
           ))}
+          
         </div>
         <div className="input-container">
           <input
