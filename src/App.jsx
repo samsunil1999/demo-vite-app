@@ -16,11 +16,31 @@ const App = () => {
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
+  const listFiles = () => {
+    fetch('http://34.198.177.67:5000/list', {
+      method: 'GET',
+    })
+    .then((resp) => {
+      if (!resp.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return resp.json()
+    })
+    .then((data) => {
+      console.log(data)
+      setUploadedFiles([...uploadedFiles, data])
+    })
+    .catch((err) => {
+      console.log("Err: ",err)
+    })
+  }
+
   const handleFileChange = (e) => {
     const chosenFile = Array.from(e.target.files);
     setFile(chosenFile);
   };
-
+console.log("file: ",file)
+console.log("selectedFile: ", selectedFile)
   const handleSendMessage = () => {
     if (message.trim()) {
       if (chatEnded) {
@@ -54,7 +74,7 @@ const App = () => {
     }
 
     for (let f of uploadedFiles) {
-      if (f.name === file[0].name) {
+      if (f.fileName === file[0].name) {
         alert(`File ${f.name} is already uploaded`);
         return
       }
@@ -76,10 +96,9 @@ const App = () => {
         return resp.json()
       })
       .then((data) => {
-        console.log("UPLOAD FILE response: ", data)
-        setUploadedFiles([...uploadedFiles, file[0]])
+        // console.log("UPLOAD FILE response: ", data)
         setFile([]);
-        
+        listFiles();
         setDisableUploadBtn(false);
       })
       .catch((err) => {
@@ -122,20 +141,18 @@ const App = () => {
         <button disabled={disableUploadBtn} onClick={handleUploadFile}>Upload</button>
         <div className="file-list">
           <h2>Uploaded Files:</h2>
-          {uploadedFiles.length > 0 && <div className="files">
+          {uploadedFiles.length > 0 ? <div className="files">
             {uploadedFiles.map((f) => (
               <div
-                className={`uploaded-file ${selectedFile && selectedFile.name === f.name ? 'selected' : ''}`}
-                key={f.name}
+                className={`uploaded-file ${selectedFile && selectedFile.fileName === f.fileName ? 'selected' : ''}`}
+                key={f.dataSourceId}
                 onClick={() => handleFileSelect(f)}
               >
-                <p>{f.name}</p>
+                <p>{f.fileName}</p>
               </div>
             ))}
-          </div>}
-
+          </div> : <div className="no-files"><span>No files Uploaded</span></div>}
         </div>
-        <div className=""></div>
       </div>
 
       <div className="right">
@@ -148,7 +165,7 @@ const App = () => {
         <div className="messages">
           {chatEnded && <div className="chat-end-msg"><span>This chat has been ended</span></div>}
           {messages.map((msg, index) => (
-            <React.Fragment key={index}>
+            <React.Fragment key={msg}>
               <div className="message">{msg}</div>
               <div className="output-message">{outputMessages[index]}</div>
             </React.Fragment>
