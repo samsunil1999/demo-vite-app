@@ -183,8 +183,19 @@ button {
   cursor: pointer;
 }
 
+button:disabled,
+button[disabled]{
+  background-color: grey !important;
+}
+
 .input-container button:hover {
   background-color: #0056b3;
+}
+
+.input-container button:hover :disabled,
+.input-container button:hover [disabled]
+{
+  background-color: grey !important;
 }
 
 
