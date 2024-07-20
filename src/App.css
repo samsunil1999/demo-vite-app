@@ -78,6 +78,18 @@ body {
   margin: 20px 20px 20px 10px;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 5px;
+  align-items: center;
+}
+
+.header button {
+  height: fit-content;
+  background-color: #dc2626;
+}
+
 .file-list {
   margin-top: 20px;
 }

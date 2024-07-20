@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 
 
@@ -12,16 +12,18 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const fileInputRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
   const handleFileChange = (e) => {
     const chosenFile = Array.from(e.target.files);
     setFile(chosenFile);
   };
-  
+
   const handleSendMessage = () => {
     if (message.trim()) {
       setDisableSentBtn(true)
       setMessages([...messages, message]);
+      setMessage('');
       setTimeout(() => {
         fetch("./data/data.json")
           .then((res) => {
@@ -36,9 +38,8 @@ const App = () => {
           })
 
         setDisableSentBtn(false)
-        setMessage('');
 
-      })
+      }, 2000)
     }
   };
 
@@ -65,6 +66,22 @@ const App = () => {
     setSelectedFile(file);
   };
 
+  const handleEndChat = () => {
+    // Clearing all states
+    setFile([])
+    setUploadedFiles([])
+    setMessages([])
+    setOutputMessages([])
+    setSelectedFile(null)
+  }
+
+  // Scroll to bottom of messages when new messages are added
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, outputMessages]);
+
   return (
     <div className="container">
       <div className="left">
@@ -81,10 +98,10 @@ const App = () => {
           <h2>Uploaded Files:</h2>
           {uploadedFiles.length > 0 && <div className="files">
             {uploadedFiles.map((f) => (
-              <div 
-              className={`uploaded-file ${selectedFile && selectedFile.name === f.name ? 'selected' : ''}`} 
-              key={f.name}
-              onClick={() => handleFileSelect(f)}
+              <div
+                className={`uploaded-file ${selectedFile && selectedFile.name === f.name ? 'selected' : ''}`}
+                key={f.name}
+                onClick={() => handleFileSelect(f)}
               >
                 <p>{f.name}</p>
               </div>
@@ -95,15 +112,18 @@ const App = () => {
         <div className=""></div>
       </div>
       <div className="right">
-        <h2>Chat</h2>
+        <div className="header">
+          <h2>Chat</h2>
+          <button onClick={handleEndChat}>End Chat</button>
+        </div>
         <div className="messages">
           {messages.map((msg, index) => (
-            <>
-              <div key={index} className="message">{msg}</div>
+            <React.Fragment key={index}>
+              <div className="message">{msg}</div>
               <div className="output-message">{outputMessages[index]}</div>
-            </>
+            </React.Fragment>
           ))}
-
+          <div ref={messagesEndRef} />
         </div>
         <div className="input-container">
           <input
@@ -112,7 +132,7 @@ const App = () => {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Select an uploaded file and type your message..."
           />
-          <button disabled={!disableSentBtn && selectedFile === null} onClick={handleSendMessage}>Send</button>
+          <button disabled={disableSentBtn || selectedFile === null} onClick={handleSendMessage}>Send</button>
         </div>
       </div>
     </div>
