@@ -4,11 +4,13 @@ import './App.css';
 
 const App = () => {
   const [file, setFile] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([])
+  const [fileName, setFileName] = useState('');
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [outputMessages, setOutputMessages] = useState([])
-  const [disableSentBtn, setDisableSentBtn] = useState(false)
+  const [outputMessages, setOutputMessages] = useState([]);
+  const [disableSentBtn, setDisableSentBtn] = useState(false);
+  const [disableUploadBtn, setDisableUploadBtn] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [chatEnded, setChatEnded] = useState(false)
 
@@ -58,14 +60,40 @@ const App = () => {
         return
       }
     }
+    setDisableUploadBtn(true);
+    setFileName(file[0].name);
 
-    setFile([]);
-    setUploadedFiles([...uploadedFiles, file[0]])
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    // Create the formData
+    const formData = new FormData();
+    formData.append(fileName, file[0])
+
+    fetch('http://34.198.177.67:5000/upload', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return resp.json()
+      })
+      .then((data) => {
+        console.log("UPLOAD FILE response: ", data)
+        setUploadedFiles([...uploadedFiles, file[0]])
+        setFile([]);
+        setFileName('');
+        
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        setDisableUploadBtn(false);
+      })
+      .catch((err) => {
+        console.log("Error : ", err)
+        setDisableUploadBtn(false);
+      })
   };
-
+// console.log(file[0][name])
   const handleFileSelect = (file) => {
     setSelectedFile(file);
   };
@@ -98,7 +126,7 @@ const App = () => {
           ref={fileInputRef}
           accept=".pdf, .doc, .csv, .xlsx, .xls"
         />
-        <button onClick={handleUploadFile}>Upload</button>
+        <button disabled={disableUploadBtn} onClick={handleUploadFile}>Upload</button>
         <div className="file-list">
           <h2>Uploaded Files:</h2>
           {uploadedFiles.length > 0 && <div className="files">
