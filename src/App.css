@@ -47,7 +47,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #242424;
+  background-color: black;
   color: white;
 }
 
@@ -60,16 +60,22 @@ body {
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
+  border-radius: 10px;
+  background-color: #242424;
+  
 }
 
 .left {
-  border-right: 2px solid #ccc;
+  max-width: 450px;
+  /* border-right: 1px solid #ccc; */
+  margin: 20px 10px 20px 20px;
 }
 
 .right {
   display: flex;
   flex-direction: column;
-  border-left: 2px solid #ccc;
+  /* border-left: 1px solid #ccc; */
+  margin: 20px 20px 20px 10px;
 }
 
 .file-list {
@@ -82,13 +88,13 @@ body {
 }
 
 .file-list li {
-  margin: 5px 0;
+  margin: 10px 0;
 }
 
 .messages {
   flex: 1;
   overflow-y: auto;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #535353;
   margin-bottom: 10px;
 }
 
@@ -102,8 +108,21 @@ body {
 .output-message {
   padding: 10px;
   border-radius: 4px;
-  background-color: #537984;
+  /* background-color: #537984; */
+  background-color: #88e9ff;
+  color: black;
   margin-bottom: 24px;
+}
+
+.files {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #b5e5f0;
+  color: black;
+  height: auto;
+  max-height: 500px;
 }
 
 .input-container {
@@ -129,4 +148,22 @@ body {
 
 .input-container button:hover {
   background-color: #0056b3;
+}
+
+
+.uploaded-file {
+  font-size: 13px;
+  border-radius: 5px;
+  padding-left: 2px;
+  cursor: pointer;
+}
+
+.uploaded-file.selected {
+  background-color: #909090; /* Light grey background for selected file */
+  border: 1px solid #333; /* Dark border for selected file */
+}
+
+#choose-file-input {
+  padding: 8px;
+  font-size: 14px;
 }
