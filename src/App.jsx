@@ -116,16 +116,16 @@ const App = () => {
         </div>
         <div className=""></div>
       </div>
+
       <div className="right">
+
         <div className="header">
           <h2>Chat</h2>
-          <button onClick={handleEndChat}>End Chat</button>
+          <button className={`${messages.length > 0 ? '' : 'hide'}`} onClick={handleEndChat}>End Chat</button>
         </div>
+
         <div className="messages">
-        
-          {chatEnded && <div className="chat-end-msg">
-            <span>This chat has been ended</span>
-            </div>}
+          {chatEnded && <div className="chat-end-msg"><span>This chat has been ended</span></div>}
           {messages.map((msg, index) => (
             <React.Fragment key={index}>
               <div className="message">{msg}</div>

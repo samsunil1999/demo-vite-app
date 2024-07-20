@@ -51,6 +51,10 @@ body {
   color: white;
 }
 
+.hide {
+  display: none;
+}
+
 .container {
   display: flex;
   height: 100vh;
@@ -126,7 +130,8 @@ body {
 .message {
   padding: 10px;
   border-radius: 4px;
-  background-color: #505050;
+  /* background-color: #505050; */
+  background-color: #353535;
   margin: 2px 0;
 }
 
@@ -157,8 +162,15 @@ body {
 .input-container input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #575757;
+  background-color: #424242;
   border-radius: 4px;
+  color: white;
+  outline: none;
+}
+
+.input-container input::placeholder{
+  color: #c0c0c0;
 }
 
 button {
