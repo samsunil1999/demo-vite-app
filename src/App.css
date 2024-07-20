@@ -56,13 +56,14 @@ body {
   height: 100vh;
 }
 
-.left, .right {
+.left,
+.right {
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
   border-radius: 10px;
   background-color: #242424;
-  
+
 }
 
 .left {
@@ -88,6 +89,18 @@ body {
 .header button {
   height: fit-content;
   background-color: #dc2626;
+}
+
+.chat-end-msg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.chat-end-msg span {
+  font-size: 30px;
+  color: #6b6b6b;
 }
 
 .file-list {
@@ -148,7 +161,7 @@ body {
   border-radius: 4px;
 }
 
- button {
+button {
   padding: 10px;
   margin-left: 10px;
   border: none;
@@ -171,8 +184,10 @@ body {
 }
 
 .uploaded-file.selected {
-  background-color: #909090; /* Light grey background for selected file */
-  border: 1px solid #333; /* Dark border for selected file */
+  background-color: #909090;
+  /* Light grey background for selected file */
+  border: 1px solid #333;
+  /* Dark border for selected file */
 }
 
 #choose-file-input {

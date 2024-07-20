@@ -10,6 +10,7 @@ const App = () => {
   const [outputMessages, setOutputMessages] = useState([])
   const [disableSentBtn, setDisableSentBtn] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null);
+  const [chatEnded, setChatEnded] = useState(false)
 
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -21,6 +22,9 @@ const App = () => {
 
   const handleSendMessage = () => {
     if (message.trim()) {
+      if (chatEnded) {
+        setChatEnded(false)
+      }
       setDisableSentBtn(true)
       setMessages([...messages, message]);
       setMessage('');
@@ -73,6 +77,7 @@ const App = () => {
     setMessages([])
     setOutputMessages([])
     setSelectedFile(null)
+    setChatEnded(true)
   }
 
   // Scroll to bottom of messages when new messages are added
@@ -117,6 +122,10 @@ const App = () => {
           <button onClick={handleEndChat}>End Chat</button>
         </div>
         <div className="messages">
+        
+          {chatEnded && <div className="chat-end-msg">
+            <span>This chat has been ended</span>
+            </div>}
           {messages.map((msg, index) => (
             <React.Fragment key={index}>
               <div className="message">{msg}</div>
