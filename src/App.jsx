@@ -4,7 +4,6 @@ import './App.css';
 
 const App = () => {
   const [file, setFile] = useState([]);
-  const [fileName, setFileName] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -61,11 +60,10 @@ const App = () => {
       }
     }
     setDisableUploadBtn(true);
-    setFileName(file[0].name);
 
     // Create the formData
     const formData = new FormData();
-    formData.append(fileName, file[0])
+    formData.append("file", file[0])
 
     fetch('http://34.198.177.67:5000/upload', {
       method: 'POST',
@@ -81,11 +79,7 @@ const App = () => {
         console.log("UPLOAD FILE response: ", data)
         setUploadedFiles([...uploadedFiles, file[0]])
         setFile([]);
-        setFileName('');
         
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
         setDisableUploadBtn(false);
       })
       .catch((err) => {
@@ -123,7 +117,6 @@ const App = () => {
           type="file"
           id="choose-file-input"
           onChange={handleFileChange}
-          ref={fileInputRef}
           accept=".pdf, .doc, .csv, .xlsx, .xls"
         />
         <button disabled={disableUploadBtn} onClick={handleUploadFile}>Upload</button>
