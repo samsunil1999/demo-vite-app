@@ -20,27 +20,26 @@ const App = () => {
     fetch('http://34.198.177.67:5000/list', {
       method: 'GET',
     })
-    .then((resp) => {
-      if (!resp.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return resp.json()
-    })
-    .then((data) => {
-      console.log(data)
-      setUploadedFiles([...uploadedFiles, data])
-    })
-    .catch((err) => {
-      console.log("Err: ",err)
-    })
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return resp.json()
+      })
+      .then((data) => {
+        console.log(data)
+        setUploadedFiles(data)
+      })
+      .catch((err) => {
+        console.log("Err: ", err)
+      })
   }
 
   const handleFileChange = (e) => {
     const chosenFile = Array.from(e.target.files);
     setFile(chosenFile);
   };
-console.log("file: ",file)
-console.log("selectedFile: ", selectedFile)
+  
   const handleSendMessage = () => {
     if (message.trim()) {
       if (chatEnded) {
@@ -96,7 +95,6 @@ console.log("selectedFile: ", selectedFile)
         return resp.json()
       })
       .then((data) => {
-        // console.log("UPLOAD FILE response: ", data)
         setFile([]);
         listFiles();
         setDisableUploadBtn(false);
@@ -106,7 +104,7 @@ console.log("selectedFile: ", selectedFile)
         setDisableUploadBtn(false);
       })
   };
-// console.log(file[0][name])
+  // console.log(file[0][name])
   const handleFileSelect = (file) => {
     setSelectedFile(file);
   };
