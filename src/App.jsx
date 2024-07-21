@@ -16,17 +16,18 @@ const App = () => {
   const [chatEnded, setChatEnded] = useState(false)
   const [loading, setLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [messageLoadingIndex, setMessageLoadingIndex] = useState(null);
 
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (isInitialLoading) {
       listFiles();
       setIsInitialLoading(false)
     }
-  })
+  }, [])
 
-  // Scroll to bottom of messages when new messages are added
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -34,6 +35,7 @@ const App = () => {
   }, [messages, outputMessages]);
 
   const listFiles = () => {
+    setLoading(true);
     fetch('http://34.198.177.67:5000/list', {
       method: 'GET',
     })
@@ -45,7 +47,8 @@ const App = () => {
       })
       .then((data) => {
         console.log(data)
-        setUploadedFiles(data)
+        setUploadedFiles(data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log("Err: ", err)
@@ -86,7 +89,9 @@ const App = () => {
         setChatEnded(false)
       }
       setDisableSentBtn(true)
+      const currentIndex = messages.length;
       setMessages([...messages, message]);
+      setMessageLoadingIndex(currentIndex);
       const urlParams = new URLSearchParams({
         searchText: message,
         fileName: selectedFile.fileName,
@@ -99,8 +104,14 @@ const App = () => {
         .then((res) => {
           return res.json()
         })
-        .then(data => {
-          setOutputMessages([...outputMessages, data.message])
+        .then((data) => {
+          // setOutputMessages([...outputMessages, data.message])
+          setOutputMessages((prevOutputMessages) => {
+            const newOutputMessages = [...prevOutputMessages];
+            newOutputMessages[currentIndex] = data.message;
+            return newOutputMessages;
+          });
+          setMessageLoadingIndex(null);
         }
         )
         .catch((err) => {
@@ -140,9 +151,12 @@ const App = () => {
         }
         return resp.json()
       })
-      .then((data) => {
+      .then(() => {
         setFile([]);
         listFiles();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
       })
       .catch((err) => {
         console.log("Error : ", err);
@@ -172,33 +186,36 @@ const App = () => {
     <div className="container">
       <div className="left">
         <h2>Upload Files</h2>
-        <input
-          type="file"
-          id="choose-file-input"
-          onChange={handleFileChange}
-          accept=".pdf, .doc, .csv, .xlsx, .xls"
-        />
-        <button disabled={disableUploadBtn} onClick={handleUploadFile}>Upload</button>
+        <div className='d-flex'>
+          <input
+            type="file"
+            id="choose-file-input"
+            onChange={handleFileChange}
+            ref={fileInputRef}
+            accept=".pdf, .doc, .csv, .xlsx, .xls"
+          />
+          <button className='upload-button' disabled={disableUploadBtn} onClick={handleUploadFile}>Upload</button>
+        </div>
         <div className="file-list">
           <h2>Uploaded Files:</h2>
           {loading ?
             <div className="loader">
               <ClipLoader size={50} color={"#123abc"} loading={loading} />
             </div>
-          :
-          <div className="result">
-            {uploadedFiles.length > 0 && !loading ? <div className="files">
-              {uploadedFiles.map((f) => (
-                <div
-                  className={`uploaded-file ${selectedFile && selectedFile.fileName === f.fileName ? 'selected' : ''}`}
-                  key={f.dataSourceId}
-                  onClick={() => handleFileSelect(f)}
-                >
-                  <p>{f.fileName}</p>
-                </div>
-              ))}
-            </div> : <div className="no-files"><span>No files Uploaded</span></div>}
-          </div>
+            :
+            <div className="result">
+              {uploadedFiles.length > 0 && !loading ? <div className="files">
+                {uploadedFiles.map((f) => (
+                  <div
+                    className={`uploaded-file ${selectedFile && selectedFile.fileName === f.fileName ? 'selected' : ''}`}
+                    key={f.dataSourceId}
+                    onClick={() => handleFileSelect(f)}
+                  >
+                    <p>{f.fileName}</p>
+                  </div>
+                ))}
+              </div> : <div className="no-files"><span>No files Uploaded</span></div>}
+            </div>
           }
 
         </div>
@@ -216,7 +233,11 @@ const App = () => {
           {messages.map((msg, index) => (
             <React.Fragment key={msg}>
               <div className="message">{msg}</div>
-              <div className="output-message">{outputMessages[index]}</div>
+              {messageLoadingIndex === index ?
+                <div className="loader">
+                  <ClipLoader size={50} color={"#123abc"} loading={true} />
+                </div>
+                : <div className="output-message">{outputMessages[index]}</div>}
             </React.Fragment>
           ))}
           <div ref={messagesEndRef} />
