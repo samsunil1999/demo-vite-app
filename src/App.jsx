@@ -125,6 +125,7 @@ const App = () => {
 
   const handleUploadFile = () => {
     if (file.length == 0) {
+      alert('Upload a file')
       return
     }
 
@@ -153,6 +154,7 @@ const App = () => {
       })
       .then(() => {
         setFile([]);
+        alert('Upload Successful');
         listFiles();
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
