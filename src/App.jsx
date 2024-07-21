@@ -2,9 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import './App.css';
 
-// TODO: 
-// 1. cal listFiles API exactly once suring initial load, As simply calling the list API in useEffect is infinitely calling list API as states are changing.
-// 2. input choose file removal using useRef
+// TODO: input text of choose file removal using useRef
 
 const App = () => {
   const [file, setFile] = useState([]);
@@ -17,14 +15,16 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [chatEnded, setChatEnded] = useState(false)
   const [loading, setLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-  const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // TODO:
-  // useEffect(() => {
-  //   listFiles();
-  // }, [])
+  useEffect(() => {
+    if (isInitialLoading) {
+      listFiles();
+      setIsInitialLoading(false)
+    }
+  })
 
   // Scroll to bottom of messages when new messages are added
   useEffect(() => {
