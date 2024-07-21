@@ -28,6 +28,14 @@ const App = () => {
     }
   }, [])
 
+  // useEffect(() => {
+  //   if(uploadedFiles.length === 1) {
+  //     setDisableUploadBtn(true);
+  //   } else {
+  //     setDisableUploadBtn(false);
+  //   }  
+  // }, [uploadedFiles])
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -165,7 +173,6 @@ const App = () => {
       })
       .finally(() => {
         setLoading(false);
-        setDisableUploadBtn(false);
       })
   };
 
