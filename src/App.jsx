@@ -28,13 +28,15 @@ const App = () => {
     }
   }, [])
 
-  // useEffect(() => {
-  //   if(uploadedFiles.length === 1) {
-  //     setDisableUploadBtn(true);
-  //   } else {
-  //     setDisableUploadBtn(false);
-  //   }  
-  // }, [uploadedFiles])
+  useEffect(() => {
+    if(uploadedFiles.length === 1) {
+      setDisableSentBtn(false)
+      setDisableUploadBtn(true);
+    } else {
+      setDisableSentBtn(true)
+      setDisableUploadBtn(false);
+    }  
+  }, [uploadedFiles])
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -102,8 +104,10 @@ const App = () => {
       setMessageLoadingIndex(currentIndex);
       const urlParams = new URLSearchParams({
         searchText: message,
-        fileName: selectedFile.fileName,
-        knowledgeBaseId: selectedFile.knowledgeBaseId,
+        // fileName: selectedFile.fileName,
+        // knowledgeBaseId: selectedFile.knowledgeBaseId,
+        fileName: uploadedFiles[0].fileName,
+        knowledgeBaseId: uploadedFiles[0].knowledgeBaseId,
       });
 
       setMessage('');
@@ -176,9 +180,9 @@ const App = () => {
       })
   };
 
-  const handleFileSelect = (file) => {
-    setSelectedFile(file);
-  };
+  // const handleFileSelect = (file) => {
+  //   setSelectedFile(file);
+  // };
 
   const handleEndChat = () => {
     // Clearing all states
@@ -217,9 +221,10 @@ const App = () => {
               {uploadedFiles.length > 0 && !loading ? <div className="files">
                 {uploadedFiles.map((f) => (
                   <div
-                    className={`uploaded-file ${selectedFile && selectedFile.fileName === f.fileName ? 'selected' : ''}`}
+                    // className={`uploaded-file ${selectedFile && selectedFile.fileName === f.fileName ? 'selected' : ''}`}
+                    className={`uploaded-file`}
                     key={f.dataSourceId}
-                    onClick={() => handleFileSelect(f)}
+                    // onClick={() => handleFileSelect(f)}
                   >
                     <p>{f.fileName}</p>
                   </div>
@@ -259,7 +264,7 @@ const App = () => {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Select an uploaded file and type your message..."
           />
-          <button disabled={disableSentBtn || selectedFile === null} onClick={handleSendMessage}>Send</button>
+          <button disabled={disableSentBtn /*selectedFile === null*/} onClick={handleSendMessage}>Send</button>
         </div>
       </div>
     </div>
