@@ -189,6 +189,7 @@ const App = () => {
     setSelectedFile(null)
     setChatEnded(true)
     deleteFiles()
+    setDisableUploadBtn(false)
   }
 
   return (
